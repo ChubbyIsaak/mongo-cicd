@@ -1,0 +1,30 @@
+name: Empaquetar Cambios Mongo
+
+on:
+  push:
+    paths:
+      - 'scripts/**/*.js'
+      - 'scripts/**/*.json'
+      - 'scripts/README.md'
+
+jobs:
+  package-and-store:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 🧱 Clonar repositorio
+      uses: actions/checkout@v3
+
+    - name: 🛠️ Dar permisos al script
+      run: chmod +x cicd/package.sh
+
+    - name: 📦 Ejecutar empaquetado
+      run: ./cicd/package.sh
+
+    - name: 🗂️ Subir artefactos para DBA
+      uses: actions/upload-artifact@v4
+      with:
+        name: paquete-cambio-mongo
+        path: |
+          dba-packages/*.zip
+          dba-packages/*.sha256.txt
