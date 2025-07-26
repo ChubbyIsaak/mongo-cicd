@@ -33,4 +33,3 @@ jobs:
           echo "Validando $f"
           jq empty "$f" || exit 1
         done
-
