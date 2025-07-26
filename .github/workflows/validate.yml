@@ -1,0 +1,31 @@
+name: Validar cambios en scripts
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/**/*.js'
+      - 'scripts/**/*.json'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Instalar dependencias
+      run: |
+        sudo apt install -y jq
+
+    - name: Validar JS (estructura)
+      run: |
+        for f in scripts/*.js; do
+          if grep -qE "db.dropDatabase|db.shutdownServer|eval" "$f"; then
+            echo "🚫 Script $f contiene comandos peligrosos"; exit 1;
+          fi
+        done
+
+    - name: Validar JSON (estructura)
+      run: |
+        for f in scripts/*.json; do jq empty "$f" || exit 1; done
