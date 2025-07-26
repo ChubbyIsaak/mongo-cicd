@@ -28,4 +28,8 @@ jobs:
 
     - name: Validar JSON (estructura)
       run: |
-        for f in scripts/*.json; do jq empty "$f" || exit 1; done
+        shopt -s nullglob
+        for f in scripts/*.json; do
+          echo "Validando $f"
+          jq empty "$f" || exit 1
+        done
